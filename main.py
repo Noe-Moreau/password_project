@@ -1,6 +1,7 @@
 import os
 import json
 import random
+from datetime import datetime
 
 # Fichier de sauvegarde des données
 FICHIER = "mots_de_passe.json"
@@ -236,7 +237,115 @@ def analyser_force(mdp: str) -> tuple[int, str]:
 
 
 def ajouter_compte():
-    pass
+    # Charger les données existantes
+    donnees = charger_donnees()
+
+    # Catégories prédéfinies
+    categories = [
+        "Réseaux sociaux",
+        "Email",
+        "Banque",
+        "Shopping",
+        "Travail",
+        "Divertissement",
+        "Cloud",
+        "Autre"
+    ]
+
+    # 1. Saisir le site
+    while True:
+        site = input("Site ou service (ex: gmail.com) : ").strip()
+        if not site:
+            print("Le nom du site ne peut pas être vide.")
+            continue
+
+        # Vérifier si le site existe déjà
+        if any(d['site'].lower() == site.lower() for d in donnees):
+            print(f"Attention : Un compte pour '{site}' existe déjà.")
+            if not _input_oui_non("Voulez-vous continuer quand même ? (O/N) : "):
+                print("Ajout annulé.")
+                return
+        break
+
+    # 2. Choisir la catégorie
+    print("\nCatégories disponibles :")
+    for i, cat in enumerate(categories, 1):
+        print(f"  {i}. {cat}")
+
+    while True:
+        try:
+            choix = int(input(f"Choisissez une catégorie (1-{len(categories)}) : "))
+            if 1 <= choix <= len(categories):
+                categorie = categories[choix - 1]
+                break
+            print(f"Veuillez entrer un nombre entre 1 et {len(categories)}.")
+        except ValueError:
+            print("Veuillez entrer un nombre valide.")
+
+    # 3. Saisir le nom du compte
+    while True:
+        nom_compte = input("Nom du compte : ").strip()
+        if nom_compte:
+            break
+        print("Le nom du compte ne peut pas être vide.")
+
+    # 4. Saisir l'email avec validation basique
+    while True:
+        email = input("Adresse email : ").strip()
+        if email and "@" in email and "." in email.split("@")[-1]:
+            break
+        print("Format d'email invalide. Veuillez réessayer.")
+
+    # 5. Mot de passe (saisir ou générer)
+    generer = _input_oui_non("Générer un mot de passe automatiquement ? (O/N) : ")
+
+    if generer:
+        try:
+            mot_de_passe = generer_mdp()
+            print(f"\nMot de passe généré : {mot_de_passe}")
+        except ValueError as e:
+            print(f"Erreur : {e}")
+            return
+    else:
+        while True:
+            mot_de_passe = input("Entrez le mot de passe : ").strip()
+            if mot_de_passe:
+                break
+            print("Le mot de passe ne peut pas être vide.")
+
+    # 6. Analyser la force du mot de passe
+    score, niveau = analyser_force(mot_de_passe)
+
+    print(f"\nScore de sécurité du mot de passe : {score}/100 ({niveau})")
+
+    if score <= 50:
+        print("Attention : Ce mot de passe est faible !")
+        if not _input_oui_non("Voulez-vous continuer quand même ? (O/N) : "):
+            print("Ajout annulé.")
+            return
+
+    # 7. Générer la date de création
+    date_creation = datetime.now().strftime("%Y-%m-%d")
+
+    # 8. Créer le dictionnaire du compte
+    nouveau_compte = {
+        "site": site,
+        "categorie": categorie,
+        "nom_compte": nom_compte,
+        "email": email,
+        "mot_de_passe": mot_de_passe,
+        "score": score,
+        "date_creation": date_creation
+    }
+
+    # 9. Ajouter à la liste et sauvegarder
+    donnees.append(nouveau_compte)
+    sauvegarder(donnees)
+
+    print(f"\n✓ Compte ajouté avec succès pour {site} !")
+    print(f"  Catégorie : {categorie}")
+    print(f"  Email : {email}")
+    print(f"  Sécurité : {score}/100")
 
 
 """
