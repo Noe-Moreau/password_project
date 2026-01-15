@@ -1,3 +1,55 @@
+import os
+import json
+
+# Fichier de sauvegarde des données
+FICHIER = "mots_de_passe.json"
+# -------------------- UTILITAIRES --------------------
+
+# Charge les données depuis le fichier JSON.
+# Retourne une liste vide si le fichier n'existe pas ou est corrompu.
+def charger_donnees():
+    if not os.path.exists(FICHIER):
+        return []
+    try:
+        with open(FICHIER, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except json.JSONDecodeError:
+        print("Fichier corrompu, réinitialisation.")
+        return []
+
+# Sauvegarde les données dans le fichier JSON.
+# Écrase le contenu existant de manière formatée.
+def sauvegarder(donnees):
+    with open(FICHIER, "w", encoding="utf-8") as f:
+        json.dump(donnees, f, indent=4)
+
+# Affiche les données sous forme de tableau lisible en console.
+# Aligne les colonnes pour une lecture claire.
+def afficher_tableau(donnees):
+    print("-" * 120)
+    print(
+        f"{'Site':20} | "
+        f"{'Catégorie':15} | "
+        f"{'Nom du compte':20} | "
+        f"{'Adresse mail':30} | "
+        f"{'Score':5} | "
+        f"{'Créé le'}"
+    )
+    print("-" * 120)
+
+    for d in donnees:
+        print(
+            f"{d['site']:20} | "
+            f"{d['categorie']:15} | "
+            f"{d['nom_compte']:20} | "
+            f"{d['email']:30} | "
+            f"{d['score']:5} | "
+            f"{d['date_creation']}"
+        )
+
+    print("-" * 120)
+
+
 """
  --------------------------------------------------
  1. Générer un mot de passe
