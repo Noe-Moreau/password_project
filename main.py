@@ -1,8 +1,11 @@
 import os
 import json
+import random
 
 # Fichier de sauvegarde des données
 FICHIER = "mots_de_passe.json"
+
+
 # -------------------- UTILITAIRES --------------------
 
 # Charge les données depuis le fichier JSON.
@@ -17,11 +20,13 @@ def charger_donnees():
         print("Fichier corrompu, réinitialisation.")
         return []
 
+
 # Sauvegarde les données dans le fichier JSON.
 # Écrase le contenu existant de manière formatée.
 def sauvegarder(donnees):
     with open(FICHIER, "w", encoding="utf-8") as f:
         json.dump(donnees, f, indent=4)
+
 
 # Affiche les données sous forme de tableau lisible en console.
 # Aligne les colonnes pour une lecture claire.
@@ -50,6 +55,29 @@ def afficher_tableau(donnees):
     print("-" * 120)
 
 
+# Demande une réponse O/N à l'utilisateur et retourne True pour O, False pour N
+# Boucle jusqu'à obtenir une entrée valide
+def _input_oui_non(message: str) -> bool:
+    while True:
+        choix = input(message).strip().upper()
+        if choix in ("O", "N"):
+            return choix == "O"
+        print("Entrée invalide. Répondez par O ou N.")
+
+
+# Demande une longueur de mot de passe comprise entre 8 et 64
+# Vérifie que l'entrée est un entier valide
+def _input_longueur() -> int:
+    while True:
+        try:
+            valeur = int(input("Longueur du mot de passe (8 à 64) : "))
+            if 8 <= valeur <= 64:
+                return valeur
+            print("La longueur doit être entre 8 et 64.")
+        except ValueError:
+            print("Veuillez entrer un nombre entier valide.")
+
+
 """
  --------------------------------------------------
  1. Générer un mot de passe
@@ -69,9 +97,46 @@ def afficher_tableau(donnees):
  - Génère un mot de passe aléatoire sécurisé
  - Retourne le mot de passe généré
 """
-def generer_mdp():
-    pass
 
+
+def generer_mdp() -> str:
+    longueur = _input_longueur()
+
+    minuscules = _input_oui_non("Inclure des minuscules ? (O/N) : ")
+    majuscules = _input_oui_non("Inclure des majuscules ? (O/N) : ")
+    chiffres = _input_oui_non("Inclure des chiffres ? (O/N) : ")
+    speciaux = _input_oui_non("Inclure des caractères spéciaux ? (O/N) : ")
+    exclure_ambigus = _input_oui_non("Exclure les caractères ambigus ? (O/N) : ")
+
+    if not any([minuscules, majuscules, chiffres, speciaux]):
+        raise ValueError("Au moins un type de caractères doit être sélectionné.")
+
+    minuscules_liste = [chr(i) for i in range(97, 123)]
+    majuscules_liste = [chr(i) for i in range(65, 91)]
+    chiffres_liste = [chr(i) for i in range(48, 58)]
+    speciaux_liste = list("!@#$%^&*()-_=+[]{};:,.<>?/")
+
+    ambigus = {"0", "O", "o", "1", "l", "I"}
+
+    autorises = []
+
+    if minuscules:
+        autorises.extend(minuscules_liste)
+    if majuscules:
+        autorises.extend(majuscules_liste)
+    if chiffres:
+        autorises.extend(chiffres_liste)
+    if speciaux:
+        autorises.extend(speciaux_liste)
+
+    if exclure_ambigus:
+        autorises = [c for c in autorises if c not in ambigus]
+
+    if not autorises:
+        raise ValueError("Aucun caractère autorisé après filtrage.")
+
+    rng = random.SystemRandom()
+    return "".join(rng.choice(autorises) for _ in range(longueur))
 
 """ 
  --------------------------------------------------
@@ -88,6 +153,8 @@ def generer_mdp():
  - Attribue un score de 0 à 100
  - Retourne le score et un niveau (Faible, Moyen, Fort, Très fort)
 """
+
+
 def analyser_force():
     pass
 
@@ -111,6 +178,8 @@ def analyser_force():
  - Ajoute le dictionnaire à la liste des comptes
  - Sauvegarde les données dans un fichier JSON
 """
+
+
 def ajouter_compte():
     pass
 
@@ -127,6 +196,8 @@ def ajouter_compte():
  - Affiche les comptes sous forme de tableau formaté
  - Montre les informations essentielles (site, catégorie, score, date)
  """
+
+
 def lister_comptes():
     pass
 
@@ -144,6 +215,8 @@ def lister_comptes():
  - Affiche les comptes correspondants sous forme de tableau
  - Affiche un message si aucun résultat n'est trouvé
 """
+
+
 def rechercher():
     pass
 
@@ -162,6 +235,8 @@ def rechercher():
  - Identifie les mots de passe trop anciens (> 90 jours)
  - Affiche un résumé clair des statistiques
 """
+
+
 def calculer_stats():
     pass
 
@@ -178,5 +253,7 @@ def calculer_stats():
  - Affiche un message de fermeture
  - Met fin proprement à l'exécution du programme
 """
+
+
 def quitter():
     pass
