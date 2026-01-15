@@ -382,7 +382,43 @@ def lister_comptes():
 
 
 def rechercher():
-    pass
+    """
+    Recherche des comptes par site ou catégorie.
+    Affiche les résultats correspondants sous forme de tableau.
+    """
+    # Charger les données
+    donnees = charger_donnees()
+
+    if not donnees:
+        print("\nAucun compte enregistré pour le moment.")
+        return
+
+    # Demander le terme de recherche
+    terme = input("\nEntrez le terme de recherche (site ou catégorie) : ").strip()
+
+    if not terme:
+        print("Le terme de recherche ne peut pas être vide.")
+        return
+
+    # Rechercher les comptes correspondants (insensible à la casse)
+    resultats = []
+    terme_lower = terme.lower()
+
+    for compte in donnees:
+        site_lower = compte['site'].lower()
+        categorie_lower = compte['categorie'].lower()
+
+        # Vérifier si le terme est dans le site ou la catégorie
+        if terme_lower in site_lower or terme_lower in categorie_lower:
+            resultats.append(compte)
+
+    # Afficher les résultats
+    if resultats:
+        print(f"\n{len(resultats)} résultat(s) trouvé(s) pour '{terme}' :\n")
+        afficher_tableau(resultats)
+    else:
+        print(f"\nAucun compte trouvé pour le terme '{terme}'.")
+        print("Essayez avec un autre terme de recherche.")
 
 
 """ --------------------------------------------------
