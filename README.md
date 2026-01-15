@@ -69,6 +69,9 @@ Chaque compte contient :
 - Score de sécurité
 
 **Structure des données :**
+
+Stockée dans le fichier nommé : mots_de_passe.json
+
 ```python
 {
   "site": "gmail.com",
