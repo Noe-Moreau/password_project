@@ -363,7 +363,34 @@ def ajouter_compte():
 
 
 def lister_comptes():
-    pass
+    # 1. Charger les données
+    comptes = charger_donnees()
+
+    # vérifier s'il y a des comptes
+    if not comptes:
+        print("Aucun compte enregistré.")
+        return
+
+    # 2. Affichage du tableau, 1ere ligne
+    print("-" * 100)
+    print(
+        f"{'Site':20} | "
+        f"{'Genre du site':15} | "
+        f"{'Compte':20} | "
+        f"{'Mail':30} | "
+        f"{'Date de création'}"
+    )
+    print("-" * 100)
+
+    # 3. Affichage du tableau, 2ere ligne à dernière ligne
+    for c in comptes:
+        print(
+            f"{c['site']:20} | "
+            f"{c['categorie']:15} | "
+            f"{c['nom_compte']:20} | "
+            f"{c['email']:30} | "
+            f"{c['date_creation']}"
+        )
 
 
 """
