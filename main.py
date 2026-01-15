@@ -5,6 +5,13 @@ import random
 # Fichier de sauvegarde des données
 FICHIER = "mots_de_passe.json"
 
+DICTIONNAIRE_FAIBLE = [
+    "password", "123456", "123456789", "qwerty", "abc123", "football",
+    "monkey", "letmein", "dragon", "111111", "baseball", "iloveyou",
+    "trustno1", "123123", "sunshine", "master", "welcome", "shadow",
+    "ashley", "jesus", "ninja", "1234", "12345", "admin", "login",
+    "princess", "solo", "passw0rd", "starwars"
+]
 
 # -------------------- UTILITAIRES --------------------
 
@@ -154,9 +161,57 @@ def generer_mdp() -> str:
  - Retourne le score et un niveau (Faible, Moyen, Fort, Très fort)
 """
 
+def analyser_force(mdp: str) -> tuple[int, str]:
 
-def analyser_force():
-    pass
+    score_points = 0
+    max_points = 8  # 8 critères
+
+    # Critère 1 : longueur ≥ 8
+    if len(mdp) >= 8:
+        score_points += 1
+
+    # Critère 2 : longueur ≥ 12 (bonus)
+    if len(mdp) >= 12:
+        score_points += 1
+
+    # Critère 3 : contient au moins une majuscule
+    if any(c.isupper() for c in mdp):
+        score_points += 1
+
+    # Critère 4 : contient au moins une minuscule
+    if any(c.islower() for c in mdp):
+        score_points += 1
+
+    # Critère 5 : contient au moins un chiffre
+    if any(c.isdigit() for c in mdp):
+        score_points += 1
+
+    # Critère 6 : contient au moins un caractère spécial
+    speciaux = "!@#$%^&*()-_=+[]{};:,.<>?/"
+    if any(c in speciaux for c in mdp):
+        score_points += 1
+    # Critère 7 : pas de caractères répétés consécutifs
+    if all(mdp[i] != mdp[i+1] for i in range(len(mdp)-1)):
+        score_points += 1
+
+    # Critère 8 : mot de passe pas dans le dictionnaire
+    if mdp.lower() not in DICTIONNAIRE_FAIBLE:
+        score_points += 1
+
+    # Conversion en pourcentage sur 0-100
+    score = int((score_points / max_points) * 100)
+
+    # Définition du niveau selon le score
+    if score <= 25:       # 0-2 points → Très faible
+        niveau = "Très faible"
+    elif score <= 50:     # 3-4 points → Faible
+        niveau = "Faible"
+    elif score <= 75:     # 5-6 points → Moyen
+        niveau = "Moyen"
+    else:                 # 7-8 points → Très fort
+        niveau = "Très fort"
+
+    return score, niveau
 
 
 """
