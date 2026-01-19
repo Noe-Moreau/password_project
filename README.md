@@ -1,17 +1,68 @@
 # Gestionnaire de Mots de Passe Sécurisé
 
-## Description du projet
+## Présentation
 
-Ce projet consiste à développer un **gestionnaire complet de mots de passe** en ligne de commande python.  
-Il permet de **générer**, **stocker**, **analyser** et **gérer** des mots de passe de manière sécurisée, tout en offrant des **statistiques globales** et des **alertes de sécurité**.
+Ce projet est un **gestionnaire de mots de passe en ligne de commande**, développé en **Python**, permettant de **générer**, **analyser**, **stocker** et **gérer** des mots de passe de manière sécurisée.
 
-L'objectif est de sensibiliser aux bonnes pratiques de cybersécurité tout en mettant en œuvre des concepts clés de programmation : structures de données, fonctions, gestion des erreurs, fichiers JSON et analyse algorithmique.
+L'application vise à sensibiliser aux bonnes pratiques de cybersécurité tout en mettant en œuvre des concepts fondamentaux de programmation : gestion de fichiers JSON, validation des entrées, analyse algorithmique, structures de données et modularité du code.
 
 ---
 
-## Fonctionnalités principales
+## Fonctionnalités clés
 
-### Menu principal (7 options)
+* Génération de mots de passe forts et personnalisables
+* Analyse avancée de la sécurité des mots de passe
+* Gestion complète de comptes (ajout, liste, recherche)
+* Statistiques détaillées sur la sécurité globale
+* Sauvegarde automatique des données au format JSON
+* Interface utilisateur claire en ligne de commande
+
+---
+
+## Prérequis
+
+* Python **3.10** ou supérieur
+* Aucune bibliothèque externe requise (bibliothèque standard uniquement)
+
+---
+
+## Installation et lancement
+
+1. Clonez ou téléchargez le projet
+2. Placez-vous dans le dossier du projet
+3. Lancez le programme :
+
+```bash
+python gestionnaire_mdp.py
+```
+
+Au premier lancement, le fichier `mots_de_passe.json` est créé automatiquement.
+
+---
+
+## Structure du projet
+
+```
+.
+├── gestionnaire_mdp.py   # Programme principal
+├── mots_de_passe.json   # Données sauvegardées (auto-généré)
+├── README.md
+└── documentation.md
+```
+
+Le code est organisé en sections claires :
+
+* constantes et configuration
+* fonctions utilitaires
+* logique métier
+* interface utilisateur
+
+---
+
+## Menu principal
+
+L'application propose **7 options** :
+
 1. Générer un mot de passe
 2. Analyser la force d’un mot de passe
 3. Ajouter un compte
@@ -22,63 +73,129 @@ L'objectif est de sensibiliser aux bonnes pratiques de cybersécurité tout en m
 
 ---
 
-## Génération avancée de mots de passe
+## Génération de mots de passe
 
-- Longueur configurable : **8 à 64 caractères**
-- Choix des types de caractères :
-  - Lettres minuscules
-  - Lettres majuscules
-  - Chiffres
-  - Caractères spéciaux
-- Option d’exclusion des caractères ambigus :
-  - `0 / O`
-  - `l / 1`
+Les mots de passe peuvent être générés selon vos critères :
+
+* Longueur configurable : **8 à 64 caractères**
+* Types de caractères au choix :
+
+  * Lettres minuscules
+  * Lettres majuscules
+  * Chiffres
+  * Caractères spéciaux
+* Option pour exclure les caractères ambigus (`0/O`, `l/1`, `I`)
+
+ Le générateur utilise `random.SystemRandom()` pour une génération cryptographiquement sécurisée.
 
 ---
 
-## Analyse de la force des mots de passe
+## Analyse de la force
 
-Chaque mot de passe reçoit un **score de 0 à 100**, basé sur :
-- Longueur
-- Diversité des types de caractères
-- Entropie estimée
-- Présence dans un dictionnaire de mots de passe courants
+Chaque mot de passe est évalué selon **8 critères de sécurité**, incluant :
 
-### Interprétation du score :
-- `0 – 39` :  Faible
-- `40 – 69` :  Moyen
-- `70 – 84` :  Fort
-- `85 – 100` :  Très fort
+* Longueur
+* Diversité des caractères
+* Présence de caractères spéciaux
+* Entropie estimée
+* Vérification contre un dictionnaire de mots de passe courants
+
+### Score de sécurité
+
+* **0 – 25** : Très faible
+* **26 – 50** : Faible
+* **51 – 75** : Moyen
+* **76 – 100** : Très fort
 
 ---
 
 ## Gestion des comptes
 
-Chaque compte contient :
-- Site / service (ex : `gmail.com`)
-- Catégorie :
-  - Réseaux sociaux
-  - Banque
-  - Email
-  - Travail
-  - Autre
-- Nom du compte
-- Adresse email associée
-- Mot de passe
-- Date de création
-- Score de sécurité
+Chaque compte enregistré contient :
 
-**Structure des données :**
+* Site ou service
+* Catégorie
+* Nom du compte
+* Adresse email
+* Mot de passe
+* Score de sécurité
+* Date de création
 
-Stockée dans le fichier nommé : mots_de_passe.json
+### Catégories disponibles
 
-```python
+* Réseaux sociaux
+* Email
+* Banque
+* Shopping
+* Travail
+* Divertissement
+* Cloud
+* Autre
+
+Des validations automatiques sont appliquées (format email, doublons, alertes de sécurité).
+
+---
+
+## Recherche et affichage
+
+* **Liste des comptes** : affichage sous forme de tableau
+* **Recherche** : par site ou catégorie
+
+  * Insensible à la casse
+  * Correspondance partielle
+
+---
+
+## Statistiques de sécurité
+
+L'application calcule et affiche :
+
+* Nombre total de comptes
+* Répartition par catégorie
+* Score moyen de sécurité
+* Comptes avec mots de passe faibles (score ≤ 50)
+* Comptes avec mots de passe anciens (> 90 jours)
+* État général de la sécurité
+o
+### État global
+
+* Excellent : ≥ 75
+* Bon : ≥ 60
+* Moyen : ≥ 40
+* Faible : < 40
+
+---
+
+## Format de stockage
+
+Les données sont stockées localement au format **JSON** :
+
+```json
 {
   "site": "gmail.com",
   "categorie": "Email",
-  "nom_compte": "Nomdecompte",
-  "email": "exemplemail1@mail.com",
-  "mdp": "MotDePasse123!",
-  "date_creation": "2025-01-10",
-  "score": 87
+  "nom_compte": "john.doe",
+  "email": "john@example.com",
+  "mot_de_passe": "Xy9#mK2$pL4@",
+  "score": 87,
+  "date_creation": "2026-01-19"
 }
+```
+
+---
+
+## Sécurité
+
+
+* Génération cryptographiquement sécurisée
+* Validation stricte des entrées utilisateur
+* Analyse multi-critères des mots de passe
+* Alertes pour mots de passe faibles ou anciens
+
+---
+
+## Auteurs
+
+- Ayman Tisguini
+- Enzo Graveline
+- Noé Moreau
