@@ -2,6 +2,7 @@ import os
 import json
 import random
 from datetime import datetime
+import sys
 
 # Fichier de sauvegarde des données
 FICHIER = "mots_de_passe.json"
@@ -567,7 +568,8 @@ def quitter():
         print("Merci d'avoir utilisé le gestionnaire de mots de passe.")
         print("À bientôt !")
         print("=" * 50)
-        exit()
+
+        sys.exit()
     else:
         print("\nRetour au menu principal...\n")
 
