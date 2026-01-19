@@ -558,3 +558,117 @@ def calculer_stats():
  - Met fin proprement à l'exécution du programme
 """
 
+def quitter():
+    """
+    Quitte proprement le programme après confirmation.
+    Affiche un message de fermeture et termine l'exécution.
+    """
+    confirmation = _input_oui_non("Voulez-vous vraiment quitter ? (O/N) : ")
+
+    if confirmation:
+        print("\n" + "=" * 50)
+        print("Merci d'avoir utilisé le gestionnaire de mots de passe.")
+        print("À bientôt !")
+        print("=" * 50)
+        exit()
+    else:
+        print("\nRetour au menu principal...\n")
+
+
+"""
+ MENU PRINCIPAL
+ 
+ Affiche le menu principal et gère le choix de l'utilisateur.
+ Appelle les fonctions correspondantes selon l'option choisie.
+"""
+
+
+def afficher_menu():
+    """
+    Affiche le menu principal avec toutes les options disponibles.
+    """
+    print("\n" + "=" * 60)
+    print("       GESTIONNAIRE DE MOTS DE PASSE")
+    print("=" * 60)
+    print("\n1. Générer un mot de passe")
+    print("2. Analyser la force d'un mot de passe")
+    print("3. Ajouter un compte")
+    print("4. Lister les comptes")
+    print("5. Rechercher un compte")
+    print("6. Afficher les statistiques")
+    print("7. Quitter")
+    print("\n" + "-" * 60)
+
+
+def menu_principal():
+    """
+    Boucle principale du programme.
+    Affiche le menu et traite les choix de l'utilisateur.
+    """
+    while True:
+        afficher_menu()
+
+        try:
+            choix = input("\nChoisissez une option (1-7) : ").strip()
+
+            if choix == "1":
+                print("\n--- Génération de mot de passe ---")
+                try:
+                    mdp = generer_mdp()
+                    print(f"\nMot de passe généré : {mdp}")
+                    print(f"Longueur : {len(mdp)} caractères")
+                except ValueError as e:
+                    print(f"Erreur : {e}")
+
+            elif choix == "2":
+                print("\n--- Analyse de la force du mot de passe ---")
+                mdp = input("Entrez le mot de passe à analyser : ").strip()
+                if mdp:
+                    score, niveau = analyser_force(mdp)
+                    print(f"\nRésultat de l'analyse :")
+                    print(f"  Score : {score}/100")
+                    print(f"  Niveau : {niveau}")
+                else:
+                    print("Le mot de passe ne peut pas être vide.")
+
+            elif choix == "3":
+                print("\n--- Ajout d'un nouveau compte ---")
+                ajouter_compte()
+
+            elif choix == "4":
+                print("\n--- Liste des comptes ---")
+                lister_comptes()
+
+            elif choix == "5":
+                print("\n--- Recherche de compte ---")
+                rechercher()
+
+            elif choix == "6":
+                print("\n--- Statistiques ---")
+                calculer_stats()
+
+            elif choix == "7":
+                quitter()
+
+            else:
+                print("\nChoix invalide. Veuillez entrer un nombre entre 1 et 7.")
+
+            # Pour éviter d'afficher le menu sans action
+            input("...")
+
+        except KeyboardInterrupt:
+            print("\n\nInterruption détectée. Fermeture du programme...")
+            break
+        except Exception as e:
+            print(f"\nErreur inattendue : {e}")
+            print("Veuillez réessayer.")
+
+
+# Point d'entrée du programme
+if __name__ == "__main__":
+    try:
+        menu_principal()
+    except KeyboardInterrupt:
+        print("\n\nProgramme interrompu. Au revoir !")
+    except Exception as e:
+        print(f"\nErreur fatale : {e}")
