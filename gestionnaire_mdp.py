@@ -651,7 +651,7 @@ def menu_principal():
                 print("\nChoix invalide. Veuillez entrer un nombre entre 1 et 7.")
 
             # Pour éviter d'afficher le menu sans action
-            input("...")
+            input("\n[appuyer sur 'entrez' pour continuer...]")
 
         except KeyboardInterrupt:
             print("\n\nInterruption détectée. Fermeture du programme...")
