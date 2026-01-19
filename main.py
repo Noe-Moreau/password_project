@@ -361,7 +361,6 @@ def ajouter_compte():
  - Montre les informations essentielles (site, catégorie, score, date)
  """
 
-
 def lister_comptes():
     # 1. Charger les données
     comptes = charger_donnees()
@@ -393,6 +392,7 @@ def lister_comptes():
         )
 
 
+
 """
  --------------------------------------------------
  5. Rechercher un compte
@@ -406,7 +406,6 @@ def lister_comptes():
  - Affiche les comptes correspondants sous forme de tableau
  - Affiche un message si aucun résultat n'est trouvé
 """
-
 
 def rechercher():
     """
@@ -448,6 +447,7 @@ def rechercher():
         print("Essayez avec un autre terme de recherche.")
 
 
+
 """ --------------------------------------------------
  6. Calculer et afficher les statistiques
  --------------------------------------------------
@@ -465,8 +465,85 @@ def rechercher():
 
 
 def calculer_stats():
-    pass
+    # Charger les données
+    donnees = charger_donnees()
 
+    if not donnees:
+        print("\nAucune donnée disponible pour les statistiques.")
+        return
+
+    print("\n" + "=" * 60)
+    print("STATISTIQUES DU GESTIONNAIRE DE MOTS DE PASSE")
+    print("=" * 60)
+
+    # 1. Nombre total de comptes
+    total_comptes = len(donnees)
+    print(f"\nNombre total de comptes : {total_comptes}")
+
+    # 2. Répartition par catégorie
+    print("\nRépartition par catégorie :")
+    categories_count = {}
+    for d in donnees:
+        cat = d.get('categorie', 'Non définie')
+        categories_count[cat] = categories_count.get(cat, 0) + 1
+
+    for cat, count in sorted(categories_count.items(), key=lambda x: x[1], reverse=True):
+        pourcentage = (count / total_comptes) * 100
+        print(f"   - {cat:20} : {count:3} compte(s) ({pourcentage:.1f}%)")
+
+    # 3. Score moyen de sécurité
+    scores = [d.get('score', 0) for d in donnees]
+    score_moyen = sum(scores) / len(scores) if scores else 0
+    print(f"\nScore moyen de sécurité : {score_moyen:.1f}/100")
+
+    # 4. Identifier les mots de passe faibles (score <= 50)
+    comptes_faibles = [d for d in donnees if d.get('score', 0) <= 50]
+    print(f"\nMots de passe faibles (score <= 50) : {len(comptes_faibles)}")
+    if comptes_faibles:
+        print("   Sites concernés :")
+        for d in comptes_faibles:
+            print(f"   - {d['site']:20} - Score : {d.get('score', 0)}/100")
+
+    # 5. Identifier les mots de passe trop anciens (> 90 jours)
+    from datetime import datetime, timedelta
+
+    date_limite = datetime.now() - timedelta(days=90)
+    comptes_anciens = []
+
+    for d in donnees:
+        date_str = d.get('date_creation', '')
+        try:
+            date_creation = datetime.strptime(date_str, "%Y-%m-%d")
+            if date_creation < date_limite:
+                jours_anciennete = (datetime.now() - date_creation).days
+                comptes_anciens.append((d, jours_anciennete))
+        except ValueError:
+            continue
+
+    print(f"\nMots de passe anciens (> 90 jours) : {len(comptes_anciens)}")
+    if comptes_anciens:
+        print("   Sites concernés :")
+        for d, jours in sorted(comptes_anciens, key=lambda x: x[1], reverse=True):
+            print(f"   - {d['site']:20} - {jours} jour(s)")
+
+    # Résumé final
+    print("\n" + "-" * 60)
+    print("RÉSUMÉ")
+    print("-" * 60)
+
+    if score_moyen >= 75:
+        etat = "Excellent"
+    elif score_moyen >= 60:
+        etat = "Bon"
+    elif score_moyen >= 40:
+        etat = "Moyen"
+    else:
+        etat = "Faible"
+
+    print(f"État général de la sécurité : {etat}")
+    print(f"Comptes à renforcer : {len(comptes_faibles)}")
+    print(f"Comptes à renouveler : {len(comptes_anciens)}")
+    print("=" * 60 + "\n")
 
 """
  --------------------------------------------------
@@ -481,6 +558,3 @@ def calculer_stats():
  - Met fin proprement à l'exécution du programme
 """
 
-
-def quitter():
-    pass
