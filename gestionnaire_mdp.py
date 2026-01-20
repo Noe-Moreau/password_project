@@ -2,7 +2,18 @@ import os
 import json
 import random
 from datetime import datetime
-import sys
+from sys import exit
+
+# ================== COULEURS ANSI ==================
+RESET = "\033[0m"
+BOLD = "\033[1m"
+RED = "\033[31m"
+GREEN = "\033[32m"
+YELLOW = "\033[33m"
+BLUE = "\033[34m"
+MAGENTA = "\033[35m"
+CYAN = "\033[36m"
+REVERSE = "\033[7m"
 
 # Fichier de sauvegarde des données
 FICHIER = "mots_de_passe.json"
@@ -14,6 +25,7 @@ DICTIONNAIRE_FAIBLE = [
     "ashley", "jesus", "ninja", "1234", "12345", "admin", "login",
     "princess", "solo", "passw0rd", "starwars"
 ]
+
 
 # -------------------- UTILITAIRES --------------------
 
@@ -147,6 +159,7 @@ def generer_mdp() -> str:
     rng = random.SystemRandom()
     return "".join(rng.choice(autorises) for _ in range(longueur))
 
+
 """ 
  --------------------------------------------------
  2. Analyser la force d'un mot de passe
@@ -163,8 +176,8 @@ def generer_mdp() -> str:
  - Retourne le score et un niveau (Faible, Moyen, Fort, Très fort)
 """
 
-def analyser_force(mdp: str) -> tuple[int, str]:
 
+def analyser_force(mdp: str) -> tuple[int, str]:
     score_points = 0
     max_points = 8  # 8 critères
 
@@ -193,7 +206,7 @@ def analyser_force(mdp: str) -> tuple[int, str]:
     if any(c in speciaux for c in mdp):
         score_points += 1
     # Critère 7 : pas de caractères répétés consécutifs
-    if all(mdp[i] != mdp[i+1] for i in range(len(mdp)-1)):
+    if all(mdp[i] != mdp[i + 1] for i in range(len(mdp) - 1)):
         score_points += 1
 
     # Critère 8 : mot de passe pas dans le dictionnaire
@@ -204,13 +217,13 @@ def analyser_force(mdp: str) -> tuple[int, str]:
     score = int((score_points / max_points) * 100)
 
     # Définition du niveau selon le score
-    if score <= 25:       # 0-2 points → Très faible
+    if score <= 25:  # 0-2 points → Très faible
         niveau = "Très faible"
-    elif score <= 50:     # 3-4 points → Faible
+    elif score <= 50:  # 3-4 points → Faible
         niveau = "Faible"
-    elif score <= 75:     # 5-6 points → Moyen
+    elif score <= 75:  # 5-6 points → Moyen
         niveau = "Moyen"
-    else:                 # 7-8 points → Très fort
+    else:  # 7-8 points → Très fort
         niveau = "Très fort"
 
     return score, niveau
@@ -362,6 +375,7 @@ def ajouter_compte():
  - Montre les informations essentielles (site, catégorie, score, date)
  """
 
+
 def lister_comptes():
     # 1. Charger les données
     comptes = charger_donnees()
@@ -393,7 +407,6 @@ def lister_comptes():
         )
 
 
-
 """
  --------------------------------------------------
  5. Rechercher un compte
@@ -407,6 +420,7 @@ def lister_comptes():
  - Affiche les comptes correspondants sous forme de tableau
  - Affiche un message si aucun résultat n'est trouvé
 """
+
 
 def rechercher():
     """
@@ -446,7 +460,6 @@ def rechercher():
     else:
         print(f"\nAucun compte trouvé pour le terme '{terme}'.")
         print("Essayez avec un autre terme de recherche.")
-
 
 
 """ --------------------------------------------------
@@ -546,6 +559,7 @@ def calculer_stats():
     print(f"Comptes à renouveler : {len(comptes_anciens)}")
     print("=" * 60 + "\n")
 
+
 """
  --------------------------------------------------
  7. Quitter le programme
@@ -559,6 +573,7 @@ def calculer_stats():
  - Met fin proprement à l'exécution du programme
 """
 
+
 def quitter():
 
     confirmation = _input_oui_non("Voulez-vous vraiment quitter ? (O/N) : ")
@@ -568,19 +583,17 @@ def quitter():
         print("Merci d'avoir utilisé le gestionnaire de mots de passe.")
         print("À bientôt !")
         print("=" * 50)
-
-        sys.exit()
+        exit()
     else:
         print("\nRetour au menu principal...\n")
 
 
 """
  MENU PRINCIPAL
- 
+
  Affiche le menu principal et gère le choix de l'utilisateur.
  Appelle les fonctions correspondantes selon l'option choisie.
 """
-
 
 def afficher_menu():
     """
@@ -589,26 +602,24 @@ def afficher_menu():
     print("\n" + "=" * 60)
     print("       GESTIONNAIRE DE MOTS DE PASSE")
     print("=" * 60)
-    print("\n1. Générer un mot de passe")
-    print("2. Analyser la force d'un mot de passe")
-    print("3. Ajouter un compte")
+    print(f"\n{BLUE}1. Générer un mot de passe")
+    print(f"2. Analyser la force d'un mot de passe{RESET}")
+    print(f"{GREEN}3. Ajouter un compte")
     print("4. Lister les comptes")
-    print("5. Rechercher un compte")
-    print("6. Afficher les statistiques")
-    print("7. Quitter")
+    print(f"5. Rechercher un compte{RESET}")
+    print(f"{MAGENTA}6. Afficher les statistiques{RESET}")
+    print(f"{YELLOW}7.Quitter{RESET}")
     print("\n" + "-" * 60)
 
-"""
+def menu_principal():
+    """
     Boucle principale du programme.
     Affiche le menu et traite les choix de l'utilisateur.
-"""
-def menu_principal():
-
+    """
     while True:
         afficher_menu()
-
         try:
-            choix = input("\nChoisissez une option (1-7) : ").strip()
+            choix = input(f"\n{BOLD}{CYAN}Choisissez une option (1-7) : ").strip()
 
             if choix == "1":
                 print("\n--- Génération de mot de passe ---")
@@ -621,7 +632,7 @@ def menu_principal():
 
             elif choix == "2":
                 print("\n--- Analyse de la force du mot de passe ---")
-                mdp = input("Entrez le mot de passe à analyser : ").strip()
+                mdp = input(f"Entrez le mot de passe à analyser : ").strip()
                 if mdp:
                     score, niveau = analyser_force(mdp)
                     print(f"\nRésultat de l'analyse :")
@@ -653,7 +664,8 @@ def menu_principal():
                 print("\nChoix invalide. Veuillez entrer un nombre entre 1 et 7.")
 
             # Pour éviter d'afficher le menu sans action
-            input("\n[appuyer sur 'entrez' pour continuer...]")
+            input(f"\n{RED}{BOLD}[appuyer sur 'entrez' pour continuer...{RESET}]")
+            print("\033c", end="")
 
         except KeyboardInterrupt:
             print("\n\nInterruption détectée. Fermeture du programme...")
