@@ -38,9 +38,9 @@ Le gestionnaire de mots de passe est une application console écrite en Python p
 
 ### Lancement
 
-```bash
-python gestionnaire_mdp.py
-```
+1. Clonez ou téléchargez le projet
+2. Extraire le contenu du fichier .zip
+3. Lancer le fichier gestionnaire_mdp.exe
 
 Le programme créera automatiquement un fichier `mots_de_passe.json` pour stocker les données.
 
@@ -50,8 +50,14 @@ Le programme créera automatiquement un fichier `mots_de_passe.json` pour stocke
 
 ### Fichiers
 
-- `gestionnaire_mdp.py` : fichier principal contenant tout le code
-- `mots_de_passe.json` : fichier de sauvegarde (créé automatiquement)
+```
+.
+├── gestionnaire_mdp.py   # Programme principal
+├── gestionnaire_mdp.exe  # Exécutable (généré avec PyInstaller)
+├── mots_de_passe.json    # Données sauvegardées (auto-généré)
+├── README.md
+└── documentation.md
+```
 
 ### Architecture du code
 
