@@ -29,14 +29,10 @@ L'application vise à sensibiliser aux bonnes pratiques de cybersécurité tout 
 ## Installation et lancement
 
 1. Clonez ou téléchargez le projet
-2. Placez-vous dans le dossier du projet
-3. Lancez le programme :
+2. Extraire le contenu du fichier .zip
+3. Lancer le fichier gestionnaire_mdp.exe
 
-```bash
-python gestionnaire_mdp.py
-```
-
-Au premier lancement, le fichier `mots_de_passe.json` est créé automatiquement.
+Le programme créera automatiquement un fichier `mots_de_passe.json` pour stocker les données.
 
 ---
 
@@ -45,7 +41,8 @@ Au premier lancement, le fichier `mots_de_passe.json` est créé automatiquement
 ```
 .
 ├── gestionnaire_mdp.py   # Programme principal
-├── mots_de_passe.json   # Données sauvegardées (auto-généré)
+├── gestionnaire_mdp.exe  # Exécutable (généré avec PyInstaller)
+├── mots_de_passe.json    # Données sauvegardées (auto-généré)
 ├── README.md
 └── documentation.md
 ```
